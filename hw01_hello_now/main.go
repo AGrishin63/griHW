@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("current time: ", time.Now().Format("2006-01-02T15:04:05 +0000 UTC"))
+	fmt.Println("current time:", time.Now().Format("2006-01-02T15:04:05 +0000 UTC"))
 	//var t time.Time
 
 	t, err := ntp.Time("0.beevik-ntp.pool.ntp.org")
@@ -21,5 +21,5 @@ func main() {
 		return
 	}
 
-	fmt.Println("exact time: ", t.Format("2006-01-02T15:04:05 +0000 UTC"))
+	fmt.Println("exact time:", t.Format("2006-01-02T15:04:05 +0000 UTC"))
 }
