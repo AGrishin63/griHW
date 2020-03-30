@@ -29,12 +29,6 @@ func Unpack(input string) (string, error) {
 			newStr += string(input[i])
 		}
 
-		//fmt.Printf("%#U   %s \n", i, input[i])
-		//fmt.Printf("%#U  %v \n", i, ch)
-		//}
-		//switch expression {
-		//case condition:
-
 	}
 	return newStr, nil
 }
