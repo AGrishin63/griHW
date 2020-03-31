@@ -20,15 +20,17 @@ func Unpack(input string) (string, error) {
 			digitCount++
 			if digitCount > 1 {
 				return "", ErrInvalidString
-			} else {
-				n, _ := strconv.Atoi(string(input[i]))
+			}
+			n, _ := strconv.Atoi(string(input[i]))
+			if n != 0 {
 				newStr += s.Repeat(string(input[i-1]), n-1)
+			} else {
+				newStr = newStr[0 : len(newStr)-1]
 			}
 		} else {
 			digitCount = 0
 			newStr += string(input[i])
 		}
-
 	}
 	return newStr, nil
 }
