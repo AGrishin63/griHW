@@ -38,6 +38,14 @@ func TestUnpack(t *testing.T) {
 			err:      ErrInvalidString,
 		},
 		{
+			input:    "q1a",
+			expected: "qa",
+		},
+		{
+			input:    "q0a",
+			expected: "a",
+		},
+		{
 			input:    "",
 			expected: "",
 		},
