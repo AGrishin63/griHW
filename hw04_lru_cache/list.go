@@ -1,69 +1,45 @@
 package hw04_lru_cache //nolint:golint,stylecheck
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-type list interface {
-	// Place your code here
+type List interface {
+	Len() int                          // длина списка
+	Front() *ListItem                  // первый Item
+	Back() *ListItem                   // последний Item
+	PushFront(v interface{}) *ListItem // добавить значение в начало
+	PushBack(v interface{}) *ListItem  // добавить значение в конец
+	Remove(i *ListItem)                // удалить элемент
+	MoveToFront(i *ListItem)           // поместить элемент в начало
+	PrintList()
 }
-=======
-// type list interface {
-// 	// Place your code here
-// 	Len() int                          // длина списка
-// 	Front() *listItem                  // первый Item
-// 	Back() *listItem                   // последний Item
-// 	PushFront(v interface{}) *listItem // добавить значение в начало
-// 	PushBack(v interface{}) *listItem  // добавить значение в конец
-// 	Remove(i *listItem)                // удалить элемент
-// 	MoveToFront(i *listItem)           // поместить элемент в начало
-// 	PrintList()
-// }
->>>>>>> d2e4e2d... HW4 is completed
 
-=======
->>>>>>> ac6863b... HW4 is completed
 type ListItem struct {
-	// Place your code here
-<<<<<<< HEAD
-=======
 	Value interface{} // значение
 	Next  *ListItem   // следующий элемент
 	Prev  *ListItem   // предыдущий элемент
->>>>>>> d2e4e2d... HW4 is completed
 }
 
-type List struct {
-	// Place your code here
-<<<<<<< HEAD
-}
-<<<<<<< HEAD
-=======
-=======
+type list struct {
 	Size  int       // Размер
 	First *ListItem // первый элемент
 	Last  *ListItem // последний элемент
 }
 
-func NewList() *List {
-	return &List{
-		Size:  0,
-		First: nil,
-		Last:  nil,
-	}
+func NewList() List {
+	return new(list)
 }
 
-func (lst List) Len() int {
+func (lst list) Len() int {
 	return lst.Size
 }
 
-func (lst *List) Front() *ListItem {
+func (lst *list) Front() *ListItem {
 	return lst.First
 }
 
-func (lst *List) Back() *ListItem {
+func (lst *list) Back() *ListItem {
 	return lst.Last
 }
 
-func (lst *List) PushFront(v interface{}) *ListItem {
+func (lst *list) PushFront(v interface{}) *ListItem {
 	it := &ListItem{
 		v,
 		nil,
@@ -80,7 +56,7 @@ func (lst *List) PushFront(v interface{}) *ListItem {
 	return it
 }
 
-func (lst *List) PushBack(v interface{}) *ListItem {
+func (lst *list) PushBack(v interface{}) *ListItem {
 	it := &ListItem{
 		v,
 		nil,
@@ -97,7 +73,7 @@ func (lst *List) PushBack(v interface{}) *ListItem {
 	return it
 }
 
-func (lst *List) Remove(i *ListItem) {
+func (lst *list) Remove(i *ListItem) {
 	if i.Next != nil {
 		i.Next.Prev = i.Prev
 	}
@@ -108,7 +84,7 @@ func (lst *List) Remove(i *ListItem) {
 	i = nil
 }
 
-func (lst *List) MoveToFront(i *ListItem) {
+func (lst *list) MoveToFront(i *ListItem) {
 	if i.Next != nil {
 		i.Next.Prev = i.Prev
 	} else {
@@ -125,21 +101,9 @@ func (lst *List) MoveToFront(i *ListItem) {
 	lst.First = i
 }
 
-<<<<<<< HEAD
->>>>>>> eb10d20... HW4 is completed
 func (lst *list) PrintList() {
-=======
-func (lst *List) PrintList() {
->>>>>>> a006b92... HW4 is completed
 	itemPtr := lst.First
 	for j := 0; j < lst.Size; j++ {
 		itemPtr = itemPtr.Prev
 	}
-<<<<<<< HEAD
->>>>>>> b254570... HW4 is completed
-
-func NewList() List {
-	return &list{}
-=======
->>>>>>> ac6863b... HW4 is completed
 }
