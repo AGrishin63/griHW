@@ -1,45 +1,40 @@
 package hw04_lru_cache //nolint:golint,stylecheck
 
-type List interface {
-	Len() int                          // длина списка
-	Front() *ListItem                  // первый Item
-	Back() *ListItem                   // последний Item
-	PushFront(v interface{}) *ListItem // добавить значение в начало
-	PushBack(v interface{}) *ListItem  // добавить значение в конец
-	Remove(i *ListItem)                // удалить элемент
-	MoveToFront(i *ListItem)           // поместить элемент в начало
-	PrintList()
-}
-
 type ListItem struct {
+	// Place your code here
 	Value interface{} // значение
 	Next  *ListItem   // следующий элемент
 	Prev  *ListItem   // предыдущий элемент
 }
 
-type list struct {
+type List struct {
+	// Place your code here
 	Size  int       // Размер
 	First *ListItem // первый элемент
 	Last  *ListItem // последний элемент
 }
 
-func NewList() List {
-	return new(list)
+func NewList() *List {
+	return &List{
+		Size:  0,
+		First: nil,
+		Last:  nil,
+	}
 }
 
-func (lst list) Len() int {
+func (lst List) Len() int {
 	return lst.Size
 }
 
-func (lst *list) Front() *ListItem {
+func (lst *List) Front() *ListItem {
 	return lst.First
 }
 
-func (lst *list) Back() *ListItem {
+func (lst *List) Back() *ListItem {
 	return lst.Last
 }
 
-func (lst *list) PushFront(v interface{}) *ListItem {
+func (lst *List) PushFront(v interface{}) *ListItem {
 	it := &ListItem{
 		v,
 		nil,
@@ -56,7 +51,7 @@ func (lst *list) PushFront(v interface{}) *ListItem {
 	return it
 }
 
-func (lst *list) PushBack(v interface{}) *ListItem {
+func (lst *List) PushBack(v interface{}) *ListItem {
 	it := &ListItem{
 		v,
 		nil,
@@ -73,7 +68,7 @@ func (lst *list) PushBack(v interface{}) *ListItem {
 	return it
 }
 
-func (lst *list) Remove(i *ListItem) {
+func (lst *List) Remove(i *ListItem) {
 	if i.Next != nil {
 		i.Next.Prev = i.Prev
 	}
@@ -84,7 +79,7 @@ func (lst *list) Remove(i *ListItem) {
 	i = nil
 }
 
-func (lst *list) MoveToFront(i *ListItem) {
+func (lst *List) MoveToFront(i *ListItem) {
 	if i.Next != nil {
 		i.Next.Prev = i.Prev
 	} else {
@@ -101,7 +96,7 @@ func (lst *list) MoveToFront(i *ListItem) {
 	lst.First = i
 }
 
-func (lst *list) PrintList() {
+func (lst *List) PrintList() {
 	itemPtr := lst.First
 	for j := 0; j < lst.Size; j++ {
 		itemPtr = itemPtr.Prev

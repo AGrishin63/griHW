@@ -3,18 +3,22 @@ package hw04_lru_cache //nolint:golint,stylecheck
 type Key string
 
 type Cache interface {
+	// Place your code here
 	Set(key string, value interface{}) bool // Добавить значение в кэш по ключу
 	Get(key string) (interface{}, bool)     // Получить значение из кэша по ключу
 	Clear()                                 // Очистить кэш
+
 }
 
 type lruCache struct {
+	// Place your code here:
 	cap int        // - capacity
-	q   List      // - queue
+	q   *List      // - queue
 	itm *cacheItem // - items
 }
 
 type cacheItem struct {
+	// Place your code here
 	k map[string]*ListItem
 	l map[*ListItem]string
 }
@@ -40,7 +44,7 @@ func (csh *lruCache) Set(key string, value interface{}) bool {
 	}
 	csh.itm.k[key] = csh.q.PushFront(value)
 	csh.itm.l[csh.itm.k[key]] = key
-	if csh.q.Len() > csh.cap {
+	if csh.q.Size > csh.cap {
 		delete(csh.itm.k, csh.itm.l[csh.q.Back()])
 		delete(csh.itm.l, csh.q.Back())
 		csh.q.Remove(csh.q.Back())
@@ -58,8 +62,8 @@ func (csh *lruCache) Get(key string) (interface{}, bool) {
 }
 
 func (csh *lruCache) Clear() {
-	for i := 0; i < csh.q.Len(); i++ {
-		csh.q.Remove(csh.q.Front())
+	for i := 0; i < csh.q.Size; i++ {
+		csh.q.Remove(csh.q.First)
 	}
 	for key := range csh.itm.k {
 		delete(csh.itm.k, key)
