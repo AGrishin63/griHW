@@ -1,14 +1,12 @@
 package hw04_lru_cache //nolint:golint,stylecheck
 
 type ListItem struct {
-	// Place your code here
 	Value interface{} // значение
 	Next  *ListItem   // следующий элемент
 	Prev  *ListItem   // предыдущий элемент
 }
 
 type List struct {
-	// Place your code here
 	Size  int       // Размер
 	First *ListItem // первый элемент
 	Last  *ListItem // последний элемент
