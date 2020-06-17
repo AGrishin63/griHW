@@ -9,7 +9,6 @@ import (
 func TestList(t *testing.T) {
 	t.Run("empty list", func(t *testing.T) {
 		l := NewList()
-
 		require.Equal(t, l.Len(), 0)
 		require.Nil(t, l.Front())
 		require.Nil(t, l.Back())
@@ -33,6 +32,7 @@ func TestList(t *testing.T) {
 			} else {
 				l.PushBack(v)
 			}
+
 		} // [80, 60, 40, 10, 30, 50, 70]
 
 		require.Equal(t, l.Len(), 7)
@@ -47,5 +47,11 @@ func TestList(t *testing.T) {
 			elems = append(elems, i.Value.(int))
 		}
 		require.Equal(t, []int{50, 30, 10, 40, 60, 80, 70}, elems)
+
+		elems2 := make([]int, 0, l.Len())
+		for i := l.Front(); i != nil; i = i.Prev {
+			elems2 = append(elems2, i.Value.(int))
+		}
+		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems2)
 	})
 }
