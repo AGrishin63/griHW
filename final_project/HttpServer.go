@@ -52,7 +52,6 @@ func mapRequest(path string, args url.Values, h *MyHandler) string {
 	if path == "/blset" {
 		sn := args.Get("subnet")
 		if SetSubnet(sn, BlackList) {
-
 			return "true"
 		}
 		m.Unlock()
@@ -63,7 +62,6 @@ func mapRequest(path string, args url.Values, h *MyHandler) string {
 	if path == "/wlset" {
 		sn := args.Get("subnet")
 		if SetSubnet(sn, WhiteList) {
-
 			return "true"
 		}
 
