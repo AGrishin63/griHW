@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"fmt"
 	"time"
 )
 
@@ -71,7 +70,7 @@ func cleanTsList(tsList []time.Time, now time.Time) []time.Time {
 func DropAuthItem(authItem string, lru Cache) {
 	lru.DeleteCacheItem(authItem)
 }
-func DropLogIp(login string, ip string) {
-	DropAuthItem(login, LoginLru)
-	DropAuthItem(ip, IpLru)
-}
+// func DropLogIp(login string, ip string) {
+// 	DropAuthItem(login, LoginLru)
+// 	DropAuthItem(ip, IpLru)
+// }

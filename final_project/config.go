@@ -1,13 +1,7 @@
 package main
 
-import (
-	"time"
-)
-
 //Конфигурируемые переменные и декларативные ресурсы
 
-// Общие
-//var ServiceStarted bool = false
 // Чёрные и белые листы
 
 var BlackList map[string]subnet
@@ -36,13 +30,6 @@ var Cfg Config
 
 // Максимальное количество элементов КЭШ для:
 var MaxBucketsInCache int = 1000 //Логинов
-
-// Максимальное число горутин
-//var MaxGoroutin int = 30
-//var goCount = 0
-
-// Контейнеры подсчёта ограничивающих событий
-var TimestampList []time.Time
 
 //LRU Кэши для хранения контейнеров
 var LoginLru Cache

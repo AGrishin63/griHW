@@ -1,10 +1,9 @@
 package main //nolint:golint,stylecheck
 import (
-	//"fmt"
 	"time"
 )
 
-type Key string
+//type Key string
 
 type Cache interface {
 	// Place your code here
