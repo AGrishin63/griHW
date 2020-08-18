@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+
+	"gopkg.in/yaml.v2"
+
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"gopkg.in/yaml.v2"
 
 	n "net/http"
 	"os"
@@ -43,8 +44,8 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		}
 		log.Println("Резудьтат проверки :", result)
 		fmt.Fprint(w, result)
-		return
 
+		return
 	}
 	if r.URL.Path == "/dropbucket" {
 		l := args.Get("login")
@@ -53,8 +54,8 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		DropAuthItem(l, LoginLru)
 		DropAuthItem(i, IPLru)
 		m.Unlock()
-		return
 
+		return
 	}
 
 	if r.URL.Path == "/blset" {
@@ -63,13 +64,13 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		if SetSubnet(sn, BlackList) {
 			fmt.Fprint(w, "true")
 			m.Unlock()
-			return
 
+			return
 		}
 		fmt.Fprint(w, "false")
 		m.Unlock()
-		return
 
+		return
 	}
 
 	if r.URL.Path == "/wlset" {
@@ -78,13 +79,13 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		if SetSubnet(sn, WhiteList) {
 			fmt.Fprint(w, "true")
 			m.Unlock()
-			return
 
+			return
 		}
 		fmt.Fprint(w, "false")
 		m.Unlock()
-		return
 
+		return
 	}
 
 	if r.URL.Path == "/bldrop" {
@@ -93,8 +94,8 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		DelSubnet(sn, BlackList)
 		m.Unlock()
 		fmt.Fprint(w, "true")
-		return
 
+		return
 	}
 
 	if r.URL.Path == "/wldrop" {
@@ -103,8 +104,8 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		DelSubnet(sn, WhiteList)
 		m.Unlock()
 		fmt.Fprint(w, "true")
-		return
 
+		return
 	}
 
 	if r.URL.Path == "/stop" {
@@ -112,8 +113,8 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		m.Lock()
 		fmt.Fprint(w, Stop(h))
 		m.Unlock()
-		return
 
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -192,8 +193,8 @@ func Start(h *MyHandler) {
 			case e, f := <-stopChan:
 				fmt.Println("Сработал stop f=", f, e)
 				h.ServiceStarted = false
-				return
 
+				return
 			}
 		}
 	}(h)
@@ -202,9 +203,11 @@ func Start(h *MyHandler) {
 
 func Stop(h *MyHandler) string {
 	if !h.ServiceStarted {
+
 		return "Сервис не запущен"
 	}
 	log.Println("Запустили останов")
 	stopChan <- true
+
 	return "Сервис остановлен"
 }
