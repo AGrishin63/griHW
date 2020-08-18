@@ -5,13 +5,15 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
 )
 
-func initSevice() {
+func initSevice(m *sync.Mutex) {
+	m.Lock()
 	//Получить путь к файлу конфигурации
 	var cfgPath string
 	cfgPath = "BruteforceConfig.yaml"
@@ -39,9 +41,11 @@ func initSevice() {
 	//Инициализация чёрного и белого списков.
 	InitLists()
 	InitLrus()
+	m.Unlock()
 }
 func TestTstAllItems(t *testing.T) {
-	initSevice()
+	m := &sync.Mutex{}
+	initSevice(m)
 	t.Run("test login", func(t *testing.T) {
 		max := LoginLru.GetLimit()
 		for i := 0; i < max; i++ {
@@ -51,7 +55,7 @@ func TestTstAllItems(t *testing.T) {
 		result := TstAllItems("1", "1", "123.123.123.45")
 		require.Equal(t, false, result, "Незаконное одобрение")
 	})
-	initSevice()
+	initSevice(m)
 	t.Run("test password", func(t *testing.T) {
 		max := PasswLru.GetLimit()
 		for i := 0; i < max; i++ {
@@ -62,7 +66,7 @@ func TestTstAllItems(t *testing.T) {
 		require.Equal(t, false, result, "Незаконное одобрение")
 
 	})
-	initSevice()
+	initSevice(m)
 	t.Run("test ip", func(t *testing.T) {
 		max := IPLru.GetLimit()
 		for i := 0; i < max; i++ {
@@ -74,7 +78,7 @@ func TestTstAllItems(t *testing.T) {
 		require.Equal(t, false, result, "Незаконное одобрение")
 
 	})
-	initSevice()
+	initSevice(m)
 	t.Run("test drop ip", func(t *testing.T) {
 		max := IPLru.GetLimit()
 		for i := 0; i < max; i++ {
@@ -88,7 +92,7 @@ func TestTstAllItems(t *testing.T) {
 
 	})
 
-	initSevice()
+	initSevice(m)
 	t.Run("test blackList", func(t *testing.T) {
 		SetSubnet("123.123.123.45/24", BlackList)
 		result := TstAllItems("log", "pwd", "123.123.123.5")
@@ -97,7 +101,7 @@ func TestTstAllItems(t *testing.T) {
 		result = TstAllItems("log", "pwd", "123.123.123.5")
 		require.Equal(t, true, result, "Незаконный отказ")
 	})
-	initSevice()
+	initSevice(m)
 	t.Run("test whiteList", func(t *testing.T) {
 		SetSubnet("123.123.123.45/24", WhiteList)
 
