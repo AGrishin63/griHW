@@ -44,6 +44,7 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		log.Println("Резудьтат проверки :", result)
 		fmt.Fprint(w, result)
 		return
+
 	}
 	if r.URL.Path == "/dropbucket" {
 		l := args.Get("login")
@@ -53,6 +54,7 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		DropAuthItem(i, IPLru)
 		m.Unlock()
 		return
+
 	}
 
 	if r.URL.Path == "/blset" {
@@ -62,10 +64,12 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 			fmt.Fprint(w, "true")
 			m.Unlock()
 			return
+
 		}
 		fmt.Fprint(w, "false")
 		m.Unlock()
 		return
+
 	}
 
 	if r.URL.Path == "/wlset" {
@@ -75,10 +79,12 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 			fmt.Fprint(w, "true")
 			m.Unlock()
 			return
+
 		}
 		fmt.Fprint(w, "false")
 		m.Unlock()
 		return
+
 	}
 
 	if r.URL.Path == "/bldrop" {
@@ -88,6 +94,7 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		m.Unlock()
 		fmt.Fprint(w, "true")
 		return
+
 	}
 
 	if r.URL.Path == "/wldrop" {
@@ -97,12 +104,16 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		m.Unlock()
 		fmt.Fprint(w, "true")
 		return
+
 	}
 
 	if r.URL.Path == "/stop" {
 		w.WriteHeader(http.StatusOK)
+		m.Lock()
 		fmt.Fprint(w, Stop(h))
+		m.Unlock()
 		return
+
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -147,11 +158,13 @@ func main() {
 
 	//Инициализация чёрного и белого списков.
 	InitLists()
+	//Таймаут в секундах
+	var to time.Duration = 10
 	server := &http.Server{
 		Addr:         Cfg.Port, //Cfg.port, ":8080"
 		Handler:      handler,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		ReadTimeout:  to * time.Second,
+		WriteTimeout: to * time.Second,
 	}
 	err = server.ListenAndServe()
 	if err != nil {
@@ -179,6 +192,7 @@ func Start(h *MyHandler) {
 				fmt.Println("Сработал stop f=", f, e)
 				h.ServiceStarted = false
 				return
+
 			}
 		}
 	}(h)

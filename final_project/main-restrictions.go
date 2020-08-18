@@ -31,17 +31,14 @@ func testItem(authItem string, lru Cache) bool {
 			lru.Set(authItem, append(tsList, now))
 			return true
 		}
-	 	// Событий больше предела
-		tsList = cleanTsList(tsList, now) // удалить события старше минуты
+		// Событий больше предела
+		tsList = cleanTSList(tsList, now) // удалить события старше минуты
 		lru.Set(authItem, tsList)
 		lru.Set(authItem, append(tsList, now))
-		if len(tsList) < lru.GetLimit() {
-			return true
-		}	 
-		return false
+		return len(tsList) < lru.GetLimit()
 	} else { //Новое событие
-
-		tsList = make([]time.Time, 0, lru.GetLimit()+2)
+		zip := 2 //запас
+		tsList = make([]time.Time, 0, lru.GetLimit()+zip)
 		tsList = append(tsList, now)
 		lru.Set(authItem, tsList)
 		//fmt.Println("Создали tsList c len=", len(tsList))
@@ -49,12 +46,13 @@ func testItem(authItem string, lru Cache) bool {
 	}
 }
 
-func cleanTsList(tsList []time.Time, now time.Time) []time.Time {
+func cleanTSList(tsList []time.Time, now time.Time) []time.Time {
 	tmp := make([]time.Time, 0, cap(tsList))
 	for i := len(tsList) - 2; i >= 0; i-- { //Убрать из списка события старше минуты
 		if now.Sub(tsList[i]) >= time.Minute {
 			tsList = tsList[i+1:]
 			break
+
 		}
 	}
 	if len(tsList) == cap(tsList) { // Если список заполнен, удалить самое старшее событие

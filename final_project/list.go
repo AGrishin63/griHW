@@ -1,4 +1,5 @@
-package main //nolint:golint,stylecheck
+package main
+
 import "time"
 
 type ListItem struct {

@@ -42,11 +42,12 @@ func DelSubnet(sn string, list map[string]subnet) {
 
 func getSubnetIP(ip string, maskLen int) string {
 	sn := ""
+	//Кол. чисел в IP адресе
+	ipMax := 4
 	for i, str := range strings.Split(ip, ".") {
 		d4, _ := strconv.Atoi(str)
-		//fmt.Println(d4, int(masks[maskLen][i]))
 		sn += strconv.Itoa(d4 & int(masks[maskLen][i]))
-		if i != 3 {
+		if i != ipMax-1 {
 			sn += "."
 		}
 	}
