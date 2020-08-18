@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"testing"
+
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
 )
@@ -63,7 +64,7 @@ func TestTstAllItems(t *testing.T) {
 	})
 	initSevice()
 	t.Run("test ip", func(t *testing.T) {
-		max := IpLru.GetLimit()
+		max := IPLru.GetLimit()
 		for i := 0; i < max; i++ {
 			result := TstAllItems("lg2"+strconv.Itoa(i), strconv.Itoa(i), "123.123.123.45")
 			require.Equal(t, true, result, "Незаконный отказ на шаге "+strconv.Itoa(i))
@@ -75,12 +76,13 @@ func TestTstAllItems(t *testing.T) {
 	})
 	initSevice()
 	t.Run("test drop ip", func(t *testing.T) {
-		max := IpLru.GetLimit()
+		max := IPLru.GetLimit()
 		for i := 0; i < max; i++ {
 			result := TstAllItems("lg2"+strconv.Itoa(i), strconv.Itoa(i), "123.123.123.45")
 			require.Equal(t, true, result, "Незаконный отказ на шаге "+strconv.Itoa(i))
 		}
-		DropLogIp("lg21", "123.123.123.45")
+		DropAuthItem("lg21", LoginLru)
+		DropAuthItem("123.123.123.45", IPLru)
 		result := TstAllItems("lg2"+strconv.Itoa(max), strconv.Itoa(max), "123.123.123.45")
 		require.Equal(t, true, result, "Незаконный отказ")
 
