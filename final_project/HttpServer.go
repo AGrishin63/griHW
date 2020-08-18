@@ -7,6 +7,7 @@ import (
 	"net/http"
 	n "net/http"
 	"os"
+	"sync"
 	"time"
 
 	"gopkg.in/yaml.v2"
@@ -15,6 +16,8 @@ import (
 type MyHandler struct {
 	ServiceStarted bool
 }
+
+var m *sync.Mutex
 
 func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 	log.Println("Поступил запрос:", r.URL)
@@ -30,8 +33,10 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 			i,
 		}
 		log.Println("Вызов TesAllItems с параметрами:", auth)
+		m.Lock()
 		inChan <- auth
 		result := "false"
+		m.Unlock()
 		if <-outChan {
 			result = "true"
 		}
@@ -42,41 +47,53 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 	if r.URL.Path == "/dropbucket" {
 		l := args.Get("login")
 		i := args.Get("ip")
+		m.Lock()
 		DropAuthItem(l, LoginLru)
 		DropAuthItem(i, IpLru)
+		m.Unlock()
 		return
 	}
 
 	if r.URL.Path == "/blset" {
 		sn := args.Get("subnet")
+		m.Lock()
 		if SetSubnet(sn, BlackList) {
 			fmt.Fprint(w, "true")
+			m.Unlock()
 			return
 		}
 		fmt.Fprint(w, "false")
+		m.Unlock()
 		return
 	}
 
 	if r.URL.Path == "/wlset" {
 		sn := args.Get("subnet")
+		m.Lock()
 		if SetSubnet(sn, WhiteList) {
 			fmt.Fprint(w, "true")
+			m.Unlock()
 			return
 		}
 		fmt.Fprint(w, "false")
+		m.Unlock()
 		return
 	}
 
 	if r.URL.Path == "/bldrop" {
 		sn := args.Get("subnet")
+		m.Lock()
 		DelSubnet(sn, BlackList)
+		m.Unlock()
 		fmt.Fprint(w, "true")
 		return
 	}
 
 	if r.URL.Path == "/wldrop" {
 		sn := args.Get("subnet")
+		m.Lock()
 		DelSubnet(sn, WhiteList)
+		m.Unlock()
 		fmt.Fprint(w, "true")
 		return
 	}
@@ -93,6 +110,7 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 }
 
 func main() {
+	m = &sync.Mutex{}
 	//Получить путь к файлу конфигурации
 	var cfgPath string
 	if len(os.Args) > 1 {
@@ -144,19 +162,14 @@ func Start(h *MyHandler) {
 		for {
 			select {
 			case auth, ok := <-inChan:
-				//fmt.Println("Пришёл запрос")
 				if !ok {
 					fmt.Println("Запрос не принят")
 					outChan <- false
 				}
-				//fmt.Println("Запрос принят.l=" + auth.l)
-				//f := TesAllItems(auth.l, auth.p, auth.i)
-				//fmt.Println("Функция вернула ", f)
 				outChan <- TstAllItems(auth.l, auth.p, auth.i)
 			case e, f := <-stopChan:
 				fmt.Println("Сработал stop f=", f, e)
 				h.ServiceStarted = false
-				//fmt.Println("Сервис остановлен")
 				return
 			}
 		}
