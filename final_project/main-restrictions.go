@@ -18,6 +18,7 @@ func TstAllItems(log string, passw string, ip string) bool {
 	if LoginLru == nil {
 		InitLrus()
 	}
+
 	return testItem(log, LoginLru) && testItem(passw, PasswLru) && testItem(ip, IPLru)
 }
 
@@ -29,14 +30,12 @@ func testItem(authItem string, lru Cache) bool {
 	if ok {
 		if len(tsList) < lru.GetLimit() { //Событий меньше предела
 			lru.Set(authItem, append(tsList, now))
-
 			return true
 		}
 		// Событий больше предела
 		tsList = cleanTSList(tsList, now) // удалить события старше минуты
 		lru.Set(authItem, tsList)
 		lru.Set(authItem, append(tsList, now))
-
 		return len(tsList) < lru.GetLimit()
 	} //Новое событие
 	zip := 2 //запас
@@ -70,8 +69,3 @@ func cleanTSList(tsList []time.Time, now time.Time) []time.Time {
 func DropAuthItem(authItem string, lru Cache) {
 	lru.DeleteCacheItem(authItem)
 }
-
-// func DropLogIp(login string, ip string) {
-// 	DropAuthItem(login, LoginLru)
-// 	DropAuthItem(ip, IpLru)
-// }

@@ -62,7 +62,6 @@ func isItSameSubNet(ip string, listSubName string, maskLen int) bool {
 func TestIPByList(ip string, list map[string]subnet) bool {
 	for key := range list {
 		if isItSameSubNet(ip, list[key].ipSub, list[key].maskLen) {
-
 			return true
 		}
 	}
@@ -71,11 +70,9 @@ func TestIPByList(ip string, list map[string]subnet) bool {
 }
 func TestIPByLists(ip string) (bool, bool) {
 	if TestIPByList(ip, WhiteList) {
-
 		return true, true
 	}
 	if TestIPByList(ip, BlackList) {
-
 		return true, false
 	}
 

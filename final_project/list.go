@@ -17,6 +17,7 @@ type List struct {
 }
 
 func NewList() *List {
+
 	return &List{
 		Size:  0,
 		First: nil,
@@ -25,14 +26,17 @@ func NewList() *List {
 }
 
 func (lst List) Len() int {
+
 	return lst.Size
 }
 
 func (lst *List) Front() *ListItem {
+
 	return lst.First
 }
 
 func (lst *List) Back() *ListItem {
+
 	return lst.Last
 }
 
@@ -50,6 +54,7 @@ func (lst *List) PushFront(v []time.Time) *ListItem {
 	}
 	lst.First = it
 	lst.Size++
+
 	return it
 }
 
@@ -67,6 +72,7 @@ func (lst *List) PushBack(v []time.Time) *ListItem {
 	}
 	lst.Last = it
 	lst.Size++
+
 	return it
 }
 

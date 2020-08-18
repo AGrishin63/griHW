@@ -32,6 +32,7 @@ func NewCache(capacity int, limit int) Cache {
 		k: make(map[string]*ListItem),
 		l: make(map[*ListItem]string),
 	}
+
 	return &lruCache{
 		cap:   capacity,
 		limit: limit,
@@ -52,6 +53,7 @@ func (csh *lruCache) Set(key string, value []time.Time) bool {
 		// fmt.Println("it=", it)
 		// fmt.Println("From cashe=", csh.itm.k[key])
 		csh.q.MoveToFront(it)
+
 		return true
 	}
 	csh.itm.k[key] = csh.q.PushFront(value)
@@ -61,6 +63,7 @@ func (csh *lruCache) Set(key string, value []time.Time) bool {
 		delete(csh.itm.l, csh.q.Back())
 		csh.q.Remove(csh.q.Back())
 	}
+
 	return false
 }
 
@@ -70,6 +73,7 @@ func (csh *lruCache) Get(key string) ([]time.Time, bool) {
 		csh.q.MoveToFront(it)
 		return it.Value, true
 	}
+	
 	return nil, false
 }
 
