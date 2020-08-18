@@ -154,8 +154,9 @@ func main() {
 	//Запуск сервиса
 	handler := &MyHandler{}
 	handler.ServiceStarted = false
+	m.Lock()
 	Start(handler)
-
+	m.Unlock()
 	//Инициализация чёрного и белого списков.
 	InitLists()
 	//Таймаут в секундах
