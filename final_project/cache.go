@@ -71,9 +71,10 @@ func (csh *lruCache) Get(key string) ([]time.Time, bool) {
 	it, ok := csh.itm.k[key]
 	if ok {
 		csh.q.MoveToFront(it)
+
 		return it.Value, true
 	}
-	
+
 	return nil, false
 }
 

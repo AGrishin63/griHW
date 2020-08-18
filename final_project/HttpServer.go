@@ -60,6 +60,7 @@ func mapRequest(path string, args url.Values, h *MyHandler) string {
 		m.Lock()
 		if SetSubnet(sn, BlackList) {
 			m.Unlock()
+
 			return "true"
 		}
 		m.Unlock()
@@ -72,6 +73,7 @@ func mapRequest(path string, args url.Values, h *MyHandler) string {
 		m.Lock()
 		if SetSubnet(sn, WhiteList) {
 			m.Unlock()
+
 			return "true"
 		}
 		m.Unlock()
