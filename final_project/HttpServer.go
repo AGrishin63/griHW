@@ -32,15 +32,11 @@ func mapRequest(path string, args url.Values, h *MyHandler) string {
 			p,
 			i,
 		}
-		log.Println("Вызов TesAllItems с параметрами:", auth)
-		m.Lock()
 		inChan <- auth
 		result := "false"
-		m.Unlock()
 		if <-outChan {
 			result = "true"
 		}
-		log.Println("Резудьтат проверки :", result)
 
 		return result
 	}
