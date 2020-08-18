@@ -75,17 +75,11 @@ func mapRequest(path string, args url.Values) string {
 		return "true"
 	}
 
-	// if path == "/wldrop" {
-	// 	sn := args.Get("subnet")
-	// 	DelSubnet(sn, WhiteList)
+	if path == "/wldrop" {
+		sn := args.Get("subnet")
+		DelSubnet(sn, WhiteList)
 
-	// 	return "true"
-	// }
-
-	if path == "/stop" {
-		s := Stop(h)
-
-		return s
+		return "true"
 	}
 
 	return "Unknown function call."
@@ -95,7 +89,31 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 	log.Println("Поступил запрос:", r.URL)
 	args := r.URL.Query()
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, mapRequest(r.URL.Path, args, h))
+	if r.URL.Path == "/testauth" {
+		l := args.Get("login")
+		p := args.Get("password")
+		i := args.Get("ip")
+		auth := Auth{
+			l,
+			p,
+			i,
+		}
+		inChan <- auth
+		result := "false"
+		if <-outChan {
+			result = "true"
+		}
+		fmt.Fprint(w, result)
+
+		return
+	}
+	if r.URL.Path == "/stop" {
+		fmt.Fprint(w, Stop(h))
+
+		return
+	}
+
+	fmt.Fprint(w, mapRequest(r.URL.Path, args))
 }
 
 func main() {
