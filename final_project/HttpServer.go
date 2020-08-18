@@ -22,6 +22,9 @@ type MyHandler struct {
 
 var m *sync.Mutex
 
+const tr string = "true"
+const fl string = "false"
+
 func mapRequest(path string, args url.Values) string {
 	if path == "/testauth" {
 		l := args.Get("login")
@@ -33,9 +36,9 @@ func mapRequest(path string, args url.Values) string {
 			i,
 		}
 		inChan <- auth
-		result := "false"
+		result := fl
 		if <-outChan {
-			result = "true"
+			result = tr
 		}
 
 		return result
@@ -46,40 +49,40 @@ func mapRequest(path string, args url.Values) string {
 		DropAuthItem(l, LoginLru)
 		DropAuthItem(i, IPLru)
 
-		return "true"
+		return tr
 	}
 
 	if path == "/blset" {
 		sn := args.Get("subnet")
 		if SetSubnet(sn, BlackList) {
-			return "true"
+			return tr
 		}
 		m.Unlock()
 
-		return "false"
+		return fl
 	}
 
 	if path == "/wlset" {
 		sn := args.Get("subnet")
 		if SetSubnet(sn, WhiteList) {
-			return "true"
+			return tr
 		}
 
-		return "false"
+		return fl
 	}
 
 	if path == "/bldrop" {
 		sn := args.Get("subnet")
 		DelSubnet(sn, BlackList)
 
-		return "true"
+		return tr
 	}
 
 	if path == "/wldrop" {
 		sn := args.Get("subnet")
 		DelSubnet(sn, WhiteList)
 
-		return "true"
+		return tr
 	}
 
 	return "Unknown function call."
@@ -99,9 +102,9 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 			i,
 		}
 		inChan <- auth
-		result := "false"
+		result := fl
 		if <-outChan {
-			result = "true"
+			result = tr
 		}
 		fmt.Fprint(w, result)
 
@@ -135,7 +138,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unmarshal: %v", err)
 	}
-
 	//Задать путь к файлу логирования
 	f, err := os.OpenFile(Cfg.LogPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
@@ -144,7 +146,6 @@ func main() {
 	defer f.Close()
 	log.SetOutput(f)
 	log.Println("Запуск http сервера")
-
 	//Запуск сервиса
 	handler := &MyHandler{}
 	handler.ServiceStarted = false
