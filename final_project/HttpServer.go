@@ -22,7 +22,7 @@ type MyHandler struct {
 
 var m *sync.Mutex
 
-func mapRequest(path string, args url.Values, h *MyHandler) string {
+func mapRequest(path string, args url.Values) string {
 	if path == "/testauth" {
 		l := args.Get("login")
 		p := args.Get("password")
@@ -75,12 +75,12 @@ func mapRequest(path string, args url.Values, h *MyHandler) string {
 		return "true"
 	}
 
-	if path == "/wldrop" {
-		sn := args.Get("subnet")
-		DelSubnet(sn, WhiteList)
+	// if path == "/wldrop" {
+	// 	sn := args.Get("subnet")
+	// 	DelSubnet(sn, WhiteList)
 
-		return "true"
-	}
+	// 	return "true"
+	// }
 
 	if path == "/stop" {
 		s := Stop(h)
