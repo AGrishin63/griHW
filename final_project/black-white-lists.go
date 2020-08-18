@@ -27,12 +27,13 @@ func SetSubnet(sn string, list map[string]subnet) bool {
 	sl := strings.Split(sn, "/")
 	len, err := strconv.Atoi(sl[1])
 	if err != nil {
+
 		return false
 	}
 	list[sn] = subnet{
 		ipSub:   getSubnetIP(sl[0], len),
 		maskLen: len}
-	//fmt.Println("после list[sn]=", list[sn])
+
 	return true
 }
 
@@ -51,6 +52,7 @@ func getSubnetIP(ip string, maskLen int) string {
 			sn += "."
 		}
 	}
+
 	return sn
 }
 
@@ -61,17 +63,22 @@ func isItSameSubNet(ip string, listSubName string, maskLen int) bool {
 func TestIPByList(ip string, list map[string]subnet) bool {
 	for key := range list {
 		if isItSameSubNet(ip, list[key].ipSub, list[key].maskLen) {
+
 			return true
 		}
 	}
+
 	return false
 }
 func TestIPByLists(ip string) (bool, bool) {
 	if TestIPByList(ip, WhiteList) {
+
 		return true, true
 	}
 	if TestIPByList(ip, BlackList) {
+
 		return true, false
 	}
+
 	return false, false
 }
