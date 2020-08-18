@@ -30,7 +30,7 @@ func SetSubnet(sn string, list map[string]subnet) bool {
 		return false
 	}
 	list[sn] = subnet{
-		ipSub:   getSubnetIp(sl[0], len),
+		ipSub:   getSubnetIP(sl[0], len),
 		maskLen: len}
 	//fmt.Println("после list[sn]=", list[sn])
 	return true
@@ -40,7 +40,7 @@ func DelSubnet(sn string, list map[string]subnet) {
 	delete(list, sn)
 }
 
-func getSubnetIp(ip string, maskLen int) string {
+func getSubnetIP(ip string, maskLen int) string {
 	sn := ""
 	for i, str := range strings.Split(ip, ".") {
 		d4, _ := strconv.Atoi(str)
@@ -54,11 +54,10 @@ func getSubnetIp(ip string, maskLen int) string {
 }
 
 func isItSameSubNet(ip string, listSubName string, maskLen int) bool {
-	//fmt.Println(getSubnetIp(ip, maskLen), listSubName)
-	return getSubnetIp(ip, maskLen) == listSubName
+	return getSubnetIP(ip, maskLen) == listSubName
 }
 
-func TestIpByList(ip string, list map[string]subnet) bool {
+func TestIPByList(ip string, list map[string]subnet) bool {
 	for key := range list {
 		if isItSameSubNet(ip, list[key].ipSub, list[key].maskLen) {
 			return true
@@ -66,11 +65,11 @@ func TestIpByList(ip string, list map[string]subnet) bool {
 	}
 	return false
 }
-func TestIpByLists(ip string) (bool, bool) {
-	if TestIpByList(ip, WhiteList) {
+func TestIPByLists(ip string) (bool, bool) {
+	if TestIPByList(ip, WhiteList) {
 		return true, true
 	}
-	if TestIpByList(ip, BlackList) {
+	if TestIPByList(ip, BlackList) {
 		return true, false
 	}
 	return false, false

@@ -7,18 +7,18 @@ import (
 func InitLrus() {
 	LoginLru = NewCache(MaxBucketsInCache, Cfg.N)
 	PasswLru = NewCache(MaxBucketsInCache, Cfg.M)
-	IpLru = NewCache(MaxBucketsInCache, Cfg.K)
+	IPLru = NewCache(MaxBucketsInCache, Cfg.K)
 }
 
 func TstAllItems(log string, passw string, ip string) bool {
-	final, ret := TestIpByLists(ip)
+	final, ret := TestIPByLists(ip)
 	if final {
 		return ret
 	}
 	if LoginLru == nil {
 		InitLrus()
 	}
-	return testItem(log, LoginLru) && testItem(passw, PasswLru) && testItem(ip, IpLru)
+	return testItem(log, LoginLru) && testItem(passw, PasswLru) && testItem(ip, IPLru)
 }
 
 func testItem(authItem string, lru Cache) bool {
@@ -30,16 +30,15 @@ func testItem(authItem string, lru Cache) bool {
 		if len(tsList) < lru.GetLimit() { //Событий меньше предела
 			lru.Set(authItem, append(tsList, now))
 			return true
-		} else { // Событий больше предела
-			tsList = cleanTsList(tsList, now) // удалить события старше минуты
-			lru.Set(authItem, tsList)
-			lru.Set(authItem, append(tsList, now))
-			if len(tsList) < lru.GetLimit() {
-				return true
-			} else {
-				return false
-			}
 		}
+	 	// Событий больше предела
+		tsList = cleanTsList(tsList, now) // удалить события старше минуты
+		lru.Set(authItem, tsList)
+		lru.Set(authItem, append(tsList, now))
+		if len(tsList) < lru.GetLimit() {
+			return true
+		}	 
+		return false
 	} else { //Новое событие
 
 		tsList = make([]time.Time, 0, lru.GetLimit()+2)
@@ -70,6 +69,7 @@ func cleanTsList(tsList []time.Time, now time.Time) []time.Time {
 func DropAuthItem(authItem string, lru Cache) {
 	lru.DeleteCacheItem(authItem)
 }
+
 // func DropLogIp(login string, ip string) {
 // 	DropAuthItem(login, LoginLru)
 // 	DropAuthItem(ip, IpLru)

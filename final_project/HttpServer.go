@@ -5,12 +5,13 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"gopkg.in/yaml.v2"
+
 	n "net/http"
 	"os"
 	"sync"
 	"time"
-
-	"gopkg.in/yaml.v2"
 )
 
 type MyHandler struct {
@@ -49,7 +50,7 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		i := args.Get("ip")
 		m.Lock()
 		DropAuthItem(l, LoginLru)
-		DropAuthItem(i, IpLru)
+		DropAuthItem(i, IPLru)
 		m.Unlock()
 		return
 	}
@@ -106,11 +107,11 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprint(w, "Unknown function call.")
-
 }
 
 func main() {
 	m = &sync.Mutex{}
+
 	//Получить путь к файлу конфигурации
 	var cfgPath string
 	if len(os.Args) > 1 {
@@ -119,6 +120,7 @@ func main() {
 		cfgPath = "BruteforceConfig.yaml"
 	}
 	log.Println("Service cfgPath=", cfgPath)
+
 	//Считать конфигурацию
 	yamlFile, err := ioutil.ReadFile(cfgPath)
 	if err != nil {
@@ -128,6 +130,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Unmarshal: %v", err)
 	}
+
 	//Задать путь к файлу логирования
 	f, err := os.OpenFile(Cfg.LogPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
@@ -136,13 +139,14 @@ func main() {
 	defer f.Close()
 	log.SetOutput(f)
 	log.Println("Запуск http сервера")
+
 	//Запуск сервиса
 	handler := &MyHandler{}
 	handler.ServiceStarted = false
 	Start(handler)
+
 	//Инициализация чёрного и белого списков.
 	InitLists()
-	//
 	server := &http.Server{
 		Addr:         Cfg.Port, //Cfg.port, ":8080"
 		Handler:      handler,
