@@ -124,7 +124,6 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 func main() {
 	m = &sync.Mutex{}
 
-	//Получить путь к файлу конфигурации
 	var cfgPath string
 	if len(os.Args) > 1 {
 		cfgPath = os.Args[1]
@@ -133,7 +132,6 @@ func main() {
 	}
 	log.Println("Service cfgPath=", cfgPath)
 
-	//Считать конфигурацию
 	yamlFile, err := ioutil.ReadFile(cfgPath)
 	if err != nil {
 		log.Fatal(err)
@@ -203,7 +201,6 @@ func Start(h *MyHandler) {
 
 func Stop(h *MyHandler) string {
 	if !h.ServiceStarted {
-
 		return "Сервис не запущен"
 	}
 	log.Println("Запустили останов")

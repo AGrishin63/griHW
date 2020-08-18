@@ -27,7 +27,6 @@ func SetSubnet(sn string, list map[string]subnet) bool {
 	sl := strings.Split(sn, "/")
 	len, err := strconv.Atoi(sl[1])
 	if err != nil {
-
 		return false
 	}
 	list[sn] = subnet{
