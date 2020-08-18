@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	n "net/http"
+	"net/url"
 	"os"
 	"sync"
 	"time"
@@ -21,14 +22,11 @@ type MyHandler struct {
 
 var m *sync.Mutex
 
-func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
-	log.Println("Поступил запрос:", r.URL)
-	args := r.URL.Query()
-	if r.URL.Path == "/testauth" {
+func mapRequest(path string, args url.Values, h *MyHandler) string {
+	if path == "/testauth" {
 		l := args.Get("login")
 		p := args.Get("password")
 		i := args.Get("ip")
-		w.WriteHeader(http.StatusOK)
 		auth := Auth{
 			l,
 			p,
@@ -43,11 +41,10 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 			result = "true"
 		}
 		log.Println("Резудьтат проверки :", result)
-		fmt.Fprint(w, result)
 
-		return
+		return result
 	}
-	if r.URL.Path == "/dropbucket" {
+	if path == "/dropbucket" {
 		l := args.Get("login")
 		i := args.Get("ip")
 		m.Lock()
@@ -55,71 +52,165 @@ func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
 		DropAuthItem(i, IPLru)
 		m.Unlock()
 
-		return
+		return "true"
 	}
 
-	if r.URL.Path == "/blset" {
+	if path == "/blset" {
 		sn := args.Get("subnet")
 		m.Lock()
 		if SetSubnet(sn, BlackList) {
-			fmt.Fprint(w, "true")
 			m.Unlock()
-
-			return
+			return "true"
 		}
-		fmt.Fprint(w, "false")
 		m.Unlock()
 
-		return
+		return "false"
 	}
 
-	if r.URL.Path == "/wlset" {
+	if path == "/wlset" {
 		sn := args.Get("subnet")
 		m.Lock()
 		if SetSubnet(sn, WhiteList) {
-			fmt.Fprint(w, "true")
 			m.Unlock()
-
-			return
+			return "true"
 		}
-		fmt.Fprint(w, "false")
 		m.Unlock()
 
-		return
+		return "false"
 	}
 
-	if r.URL.Path == "/bldrop" {
+	if path == "/bldrop" {
 		sn := args.Get("subnet")
 		m.Lock()
 		DelSubnet(sn, BlackList)
 		m.Unlock()
-		fmt.Fprint(w, "true")
 
-		return
+		return "true"
 	}
 
-	if r.URL.Path == "/wldrop" {
+	if path == "/wldrop" {
 		sn := args.Get("subnet")
 		m.Lock()
 		DelSubnet(sn, WhiteList)
 		m.Unlock()
-		fmt.Fprint(w, "true")
 
-		return
+		return "true"
 	}
 
-	if r.URL.Path == "/stop" {
-		w.WriteHeader(http.StatusOK)
+	if path == "/stop" {
 		m.Lock()
-		fmt.Fprint(w, Stop(h))
+		s := Stop(h)
 		m.Unlock()
 
-		return
+		return s
 	}
 
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "Unknown function call.")
+	return "Unknown function call."
 }
+
+func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
+	log.Println("Поступил запрос:", r.URL)
+	args := r.URL.Query()
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, mapRequest(r.URL.Path, args, h))
+}
+
+// 	if r.URL.Path == "/testauth" {
+// 		l := args.Get("login")
+// 		p := args.Get("password")
+// 		i := args.Get("ip")
+// 		w.WriteHeader(http.StatusOK)
+// 		auth := Auth{
+// 			l,
+// 			p,
+// 			i,
+// 		}
+// 		log.Println("Вызов TesAllItems с параметрами:", auth)
+// 		m.Lock()
+// 		inChan <- auth
+// 		result := "false"
+// 		m.Unlock()
+// 		if <-outChan {
+// 			result = "true"
+// 		}
+// 		log.Println("Резудьтат проверки :", result)
+// 		fmt.Fprint(w, result)
+
+// 		return
+// 	}
+// 	if r.URL.Path == "/dropbucket" {
+// 		l := args.Get("login")
+// 		i := args.Get("ip")
+// 		m.Lock()
+// 		DropAuthItem(l, LoginLru)
+// 		DropAuthItem(i, IPLru)
+// 		m.Unlock()
+
+// 		return
+// 	}
+
+// 	if r.URL.Path == "/blset" {
+// 		sn := args.Get("subnet")
+// 		m.Lock()
+// 		if SetSubnet(sn, BlackList) {
+// 			fmt.Fprint(w, "true")
+// 			m.Unlock()
+
+// 			return
+// 		}
+// 		fmt.Fprint(w, "false")
+// 		m.Unlock()
+
+// 		return
+// 	}
+
+// 	if r.URL.Path == "/wlset" {
+// 		sn := args.Get("subnet")
+// 		m.Lock()
+// 		if SetSubnet(sn, WhiteList) {
+// 			fmt.Fprint(w, "true")
+// 			m.Unlock()
+
+// 			return
+// 		}
+// 		fmt.Fprint(w, "false")
+// 		m.Unlock()
+
+// 		return
+// 	}
+
+// 	if r.URL.Path == "/bldrop" {
+// 		sn := args.Get("subnet")
+// 		m.Lock()
+// 		DelSubnet(sn, BlackList)
+// 		m.Unlock()
+// 		fmt.Fprint(w, "true")
+
+// 		return
+// 	}
+
+// 	if r.URL.Path == "/wldrop" {
+// 		sn := args.Get("subnet")
+// 		m.Lock()
+// 		DelSubnet(sn, WhiteList)
+// 		m.Unlock()
+// 		fmt.Fprint(w, "true")
+
+// 		return
+// 	}
+
+// 	if r.URL.Path == "/stop" {
+// 		w.WriteHeader(http.StatusOK)
+// 		m.Lock()
+// 		fmt.Fprint(w, Stop(h))
+// 		m.Unlock()
+
+// 		return
+// 	}
+
+// 	w.WriteHeader(http.StatusOK)
+// 	fmt.Fprint(w, "Unknown function call.")
+// }
 
 func main() {
 	m = &sync.Mutex{}
