@@ -22,8 +22,8 @@ type MyHandler struct {
 
 var m *sync.Mutex
 
-const tr string = "true"
 const fl string = "false"
+const tr string = "true"
 
 func mapRequest(path string, args url.Values) string {
 	if path == "/testauth" {
@@ -145,7 +145,6 @@ func main() {
 	defer f.Close()
 	log.SetOutput(f)
 	log.Println("Запуск http сервера")
-	//Запуск сервиса
 	handler := &MyHandler{}
 	handler.ServiceStarted = false
 	m.Lock()
