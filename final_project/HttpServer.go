@@ -2,17 +2,15 @@ package main
 
 import (
 	"fmt"
-
-	"gopkg.in/yaml.v2"
-
 	"io/ioutil"
 	"log"
 	"net/http"
-
 	"net/url"
 	"os"
 	"sync"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 type MyHandler struct {
