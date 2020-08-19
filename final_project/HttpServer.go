@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/http"
 
-	n "net/http"
 	"net/url"
 	"os"
 	"sync"
@@ -88,7 +87,7 @@ func mapRequest(path string, args url.Values) string {
 	return "Unknown function call."
 }
 
-func (h *MyHandler) ServeHTTP(w n.ResponseWriter, r *n.Request) {
+func (h *MyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Println("Поступил запрос:", r.URL)
 	args := r.URL.Query()
 	w.WriteHeader(http.StatusOK)
@@ -150,10 +149,8 @@ func main() {
 	m.Lock()
 	Start(handler)
 	m.Unlock()
-	//Инициализация чёрного и белого списков.
-	InitLists()
-	//Таймаут в секундах
-	var to time.Duration = 10
+	InitLists()               //Инициализация чёрного и белого списков.
+	var to time.Duration = 10 //Таймаут в секундах
 	server := &http.Server{
 		Addr:         Cfg.Port, //Cfg.port, ":8080"
 		Handler:      handler,
