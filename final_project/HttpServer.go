@@ -159,7 +159,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func Start(h *MyHandler) {
@@ -185,7 +184,6 @@ func Start(h *MyHandler) {
 			}
 		}
 	}(h)
-
 }
 
 func Stop(h *MyHandler) string {
