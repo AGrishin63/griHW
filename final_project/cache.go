@@ -4,8 +4,6 @@ import (
 	"time"
 )
 
-//type Key string
-
 type Cache interface {
 	// Place your code here
 	Set(key string, value []time.Time) bool // Добавить значение в кэш по ключу
@@ -50,9 +48,6 @@ func (csh *lruCache) Set(key string, value []time.Time) bool {
 	if ok {
 		it.Value = value
 		csh.itm.k[key] = it
-		// fmt.Println("value=", value)
-		// fmt.Println("it=", it)
-		// fmt.Println("From cashe=", csh.itm.k[key])
 		csh.q.MoveToFront(it)
 
 		return true

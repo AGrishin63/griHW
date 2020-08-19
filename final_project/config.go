@@ -30,7 +30,7 @@ var Cfg Config
 
 var MaxBucketsInCache int = 1000 //Логинов
 
-//LRU Кэши для хранения контейнеров ...
+// LRU Кэши для хранения контейнеров ...
 var LoginLru Cache
 var PasswLru Cache
 var IPLru Cache

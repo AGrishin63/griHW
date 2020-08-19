@@ -25,10 +25,8 @@ func TstAllItems(log string, passw string, ip string) bool {
 func testItem(authItem string, lru Cache) bool {
 	now := time.Now()
 	tsList, ok := lru.Get(authItem)
-	//fmt.Println("len(tsList)=", len(tsList))
-	//fmt.Println("lru.GetLimit()=", lru.GetLimit())
 	if ok {
-		if len(tsList) < lru.GetLimit() { //Событий меньше предела
+		if len(tsList) < lru.GetLimit() { // Событий меньше предела
 			lru.Set(authItem, append(tsList, now))
 
 			return true
@@ -39,19 +37,18 @@ func testItem(authItem string, lru Cache) bool {
 		lru.Set(authItem, append(tsList, now))
 
 		return len(tsList) < lru.GetLimit()
-	} //Новое событие
-	zip := 2 //запас
+	} // Новое событие
+	zip := 2 // запас
 	tsList = make([]time.Time, 0, lru.GetLimit()+zip)
 	tsList = append(tsList, now)
 	lru.Set(authItem, tsList)
-	//fmt.Println("Создали tsList c len=", len(tsList))
 
 	return true
 }
 
 func cleanTSList(tsList []time.Time, now time.Time) []time.Time {
 	tmp := make([]time.Time, 0, cap(tsList))
-	for i := len(tsList) - 2; i >= 0; i-- { //Убрать из списка события старше минуты
+	for i := len(tsList) - 2; i >= 0; i-- { // Убрать из списка события старше минуты
 		if now.Sub(tsList[i]) >= time.Minute {
 			tsList = tsList[i+1:]
 

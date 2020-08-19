@@ -31,7 +31,8 @@ func SetSubnet(sn string, list map[string]subnet) bool {
 	}
 	list[sn] = subnet{
 		ipSub:   getSubnetIP(sl[0], len),
-		maskLen: len}
+		maskLen: len,
+	}
 
 	return true
 }
@@ -42,7 +43,7 @@ func DelSubnet(sn string, list map[string]subnet) {
 
 func getSubnetIP(ip string, maskLen int) string {
 	sn := ""
-	//Кол. чисел в IP адресе
+	// Кол. чисел в IP адресе
 	ipMax := 4
 	for i, str := range strings.Split(ip, ".") {
 		d4, _ := strconv.Atoi(str)
