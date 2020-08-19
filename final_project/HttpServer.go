@@ -147,10 +147,10 @@ func main() {
 	m.Lock()
 	Start(handler)
 	m.Unlock()
-	InitLists()               //Инициализация чёрного и белого списков.
-	var to time.Duration = 10 //Таймаут в секундах
+	InitLists()               // Инициализация чёрного и белого списков.
+	var to time.Duration = 10 // Таймаут в секундах
 	server := &http.Server{
-		Addr:         Cfg.Port, //Cfg.port, ":8080"
+		Addr:         Cfg.Port, // Cfg.port, ":8080"
 		Handler:      handler,
 		ReadTimeout:  to * time.Second,
 		WriteTimeout: to * time.Second,
