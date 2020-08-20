@@ -47,8 +47,9 @@ func testItem(authItem string, lru Cache) bool {
 }
 
 func cleanTSList(tsList []time.Time, now time.Time) []time.Time {
+	zip := 2 // запас
 	tmp := make([]time.Time, 0, cap(tsList))
-	for i := len(tsList) - 2; i >= 0; i-- { // Убрать из списка события старше минуты
+	for i := len(tsList) - zip; i >= 0; i-- { // Убрать из списка события старше минуты
 		if now.Sub(tsList[i]) >= time.Minute {
 			tsList = tsList[i+1:]
 
