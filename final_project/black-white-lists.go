@@ -69,6 +69,7 @@ func TestIPByList(ip string, list map[string]subnet) bool {
 
 	return false
 }
+
 func TestIPByLists(ip string) (bool, bool) {
 	if TestIPByList(ip, WhiteList) {
 		return true, true

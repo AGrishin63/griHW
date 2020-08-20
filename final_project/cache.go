@@ -39,6 +39,7 @@ func NewCache(capacity int, limit int) Cache {
 		itm:   cItm,
 	}
 }
+
 func (csh *lruCache) GetLimit() int {
 	return csh.limit
 }
@@ -85,6 +86,7 @@ func (csh *lruCache) Clear() {
 		delete(csh.itm.l, ls)
 	}
 }
+
 func (csh *lruCache) DeleteCacheItem(key string) {
 	delete(csh.itm.l, csh.itm.k[key])
 	csh.q.Remove(csh.itm.k[key])
