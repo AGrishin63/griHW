@@ -13,7 +13,6 @@ import (
 )
 
 func initSevice(m *sync.Mutex) {
-	m.Lock()
 	//Получить путь к файлу конфигурации
 	var cfgPath string
 	cfgPath = "BruteforceConfig.yaml"
@@ -37,6 +36,7 @@ func initSevice(m *sync.Mutex) {
 	//Запуск сервиса
 	handler := &MyHandler{}
 	handler.ServiceStarted = false
+	m.Lock()
 	Start(handler)
 	//Инициализация чёрного и белого списков.
 	InitLists()
