@@ -18,8 +18,11 @@ type MyHandler struct {
 }
 
 var m *sync.Mutex
-const fl string = "false"
-const tr string = "true"
+
+const (
+	fl string = "false"
+	tr string = "true"
+)
 
 func mapRequest(path string, args url.Values) string {
 	if path == "/testauth" {
